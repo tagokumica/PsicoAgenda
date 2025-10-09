@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: psico-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}  # defina no .env
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssqldata:/var/opt/mssql
+      # Removido: /docker-entrypoint-initdb.d (não é suportado no SQL Server)
+    restart: unless-stopped
+    networks: [appnet]
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost,1433", "-U", "sa", "-P", "${MSSQL_SA_PASSWORD}", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # (Opcional) job para aplicar scripts .sql após o DB ficar saudável
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [appnet]
+    volumes:
+      - ./init-sql:/init-sql:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      'for f in /init-sql/*.sql; do
+         echo "Executando $${f}...";
+         /opt/mssql-tools/bin/sqlcmd -S db,1433 -U sa -P "$${MSSQL_SA_PASSWORD}" -d master -i "$${f}";
+       done || true'
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    restart: "no"
+
+  api:
+    build:
+      context: ./PsicoAgendaAPI
+      dockerfile: Dockerfile
+    container_name: psico-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # Use a MESMA senha do DB (via env) para evitar divergência:
+      ConnectionStrings__Default: "Server=db,1433;Database=PsicoDB;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+    ports:
+      - "8081:8080"  # opcional expor a API (Nginx pode acessar via rede interna)
+    networks: [appnet]
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./PsicoAgendaAPI
+      dockerfile: Dockerfile
+    container_name: psico-web
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks: [appnet]
+    restart: unless-stopped
+
+networks:
+  appnet:
+
+volumes:
+  mssqldata:
