@@ -1,21 +1,14 @@
-
-# ========= BACKEND (.NET 8 API) =========
-# build da API
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+COPY ["./api/PsicoAgendaAPI/PsicoAgendaAPI.csproj", "PsicoAgendaAPI/"]
+RUN dotnet restore "PsicoAgendaAPI/PsicoAgendaAPI.csproj"
+COPY ./api/ .
+WORKDIR "/src/PsicoAgendaAPI"
+RUN dotnet publish "PsicoAgendaAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# copie só csproj primeiro para cache do restore
-COPY PsicoAgendaAPI.csproj ./
-RUN dotnet restore
-
-# agora o restante do código
-COPY . .
-RUN dotnet publish -c Release -o /app/publish
-
-# imagem final da API (runtime)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS backend
+# Etapa 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-ENV ASPNETCORE_URLS=http://+:8080
-COPY --from=backend-build /app/publish .
-EXPOSE 8080
+COPY --from=build /app/publish .
+RUN ls 
 ENTRYPOINT ["dotnet", "PsicoAgendaAPI.dll"]
