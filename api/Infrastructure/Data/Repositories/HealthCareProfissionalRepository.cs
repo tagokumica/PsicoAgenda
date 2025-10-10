@@ -17,6 +17,7 @@ public class HealthCareProfissionalRepository : GenericRepository<HealthCareProf
         return await
             _db
                 .Availabilities
+                .AsNoTracking()
                 .Include(t => t.HealthCareProfissional)
                 .Where(s => s.ProfissionalId == profissionalId)
                 .Select(s => s.HealthCareProfissional)
@@ -28,6 +29,7 @@ public class HealthCareProfissionalRepository : GenericRepository<HealthCareProf
         return await
             _db
                 .SessionNotes
+                .AsNoTracking()
                 .Include(t => t.HealthCareProfissional)
                 .Where(s => s.ProfessionalId == profissionalId)
                 .Select(s => s.HealthCareProfissional)
@@ -39,6 +41,7 @@ public class HealthCareProfissionalRepository : GenericRepository<HealthCareProf
         return await
             _db
                 .SessionSchedules
+                .AsNoTracking()
                 .Include(t => t.HealthCareProfissional)
                 .Where(s => s.ProfessionalId == profissionalId)
                 .Select(s => s.HealthCareProfissional)

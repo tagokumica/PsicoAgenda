@@ -16,6 +16,7 @@ public class AddressRepository : GenericRepository<Address, Guid>, IAddressRepos
         return await
             _db
                 .Users
+                .AsNoTracking()
                 .Include(t => t.Address)
                 .Where(s => s.AddressId == addressId)
                 .Select(s => s.Address)
@@ -27,6 +28,7 @@ public class AddressRepository : GenericRepository<Address, Guid>, IAddressRepos
         return await
             _db
                 .Locations
+                .AsNoTracking()
                 .Include(t => t.Address)
                 .Where(s => s.AddressId == addressId)
                 .Select(s => s.Address)

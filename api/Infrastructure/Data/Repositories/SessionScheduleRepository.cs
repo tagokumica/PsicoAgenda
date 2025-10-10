@@ -16,6 +16,7 @@ public class SessionScheduleRepository : GenericRepository<SessionSchedule, Guid
         return await
             _db
                 .SessionNotes
+                .AsNoTracking()
                 .Include(t => t.SessionSchedule)
                 .Where(s => s.SessionScheduleId == sessionScheduleId)
                 .Select(s => s.SessionSchedule)
@@ -28,6 +29,7 @@ public class SessionScheduleRepository : GenericRepository<SessionSchedule, Guid
         return await
             _db
                 .Waits
+                .AsNoTracking()
                 .Include(t => t.SessionSchedule)
                 .Where(s => s.SessionId == sessionScheduleId)
                 .Select(s => s.SessionSchedule)

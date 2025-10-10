@@ -16,6 +16,7 @@ namespace Infrastructure.Data.Repositories
             return await
                 _db
                     .TermsAcceptances
+                    .AsNoTracking()
                     .Include(t => t.TermsOfUse)
                     .Where(s => s.TermsOfUseId == termsOfUseId)
                     .Select(s => s.TermsOfUse)

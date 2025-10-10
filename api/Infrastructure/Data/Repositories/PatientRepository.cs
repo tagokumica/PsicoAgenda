@@ -16,6 +16,7 @@ public class PatientRepository : GenericRepository<Patient, Guid>, IPatientRepos
         return await
             _db
                 .Consents
+                .AsNoTracking()
                 .Include(t => t.Patient)
                 .Where(s => s.PatientId == patientId)
                 .Select(s => s.Patient)
@@ -27,6 +28,7 @@ public class PatientRepository : GenericRepository<Patient, Guid>, IPatientRepos
         return await
             _db
                 .Availabilities
+                .AsNoTracking()
                 .Include(t => t.Patient)
                 .Where(s => s.PatientId == patientId)
                 .Select(s => s.Patient)
@@ -38,6 +40,7 @@ public class PatientRepository : GenericRepository<Patient, Guid>, IPatientRepos
         return await
             _db
                 .Waits
+                .AsNoTracking()
                 .Include(t => t.Patient)
                 .Where(s => s.PatientId == patientId)
                 .Select(s => s.Patient)
