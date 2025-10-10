@@ -56,15 +56,15 @@ namespace PsicoAgendaTests.Api.Controllers
             Mock<UserManager<IdentityUser>> userMgr,
             Mock<SignInManager<IdentityUser>> signInMgr,
             Mock<IJwtTokenService> jwt)
-        {
-            return new AuthController(userMgr.Object, signInMgr.Object, jwt.Object)
             {
-                ControllerContext = new ControllerContext
+                return new AuthController(userMgr.Object, signInMgr.Object, jwt.Object)
                 {
-                    HttpContext = new DefaultHttpContext()
-                }
-            };
-        }
+                    ControllerContext = new ControllerContext
+                    {
+                        HttpContext = new DefaultHttpContext()
+                    }
+                };
+            }
 
         [Fact(DisplayName = "Register: sucesso retorna Ok(TokenResponse) e adiciona role 'user'")]
         public async Task Register_Sucesso()
@@ -210,7 +210,7 @@ namespace PsicoAgendaTests.Api.Controllers
             Assert.IsType<UnauthorizedResult>(res);
         }
 
-        // ---------- Tests: /refresh ----------
+        
         [Fact(DisplayName = "Refresh: sucesso retorna Ok(TokenResponse)")]
         public async Task Refresh_Sucesso()
         {
@@ -231,7 +231,7 @@ namespace PsicoAgendaTests.Api.Controllers
             Assert.Equal("r2", payload.RefreshToken);
         }
 
-        // ---------- Tests: /me ----------
+        
         [Fact(DisplayName = "Me: retorna nome e claims do usuário autenticado")]
         public void Me_Sucesso()
         {
@@ -247,7 +247,8 @@ namespace PsicoAgendaTests.Api.Controllers
             new Claim(ClaimTypes.Name, "alice"),
             new Claim(ClaimTypes.Role, "user"),
             new Claim("custom", "123")
-        }, authenticationType: "TestAuth");
+            },
+            authenticationType: "TestAuth");
 
             controller.ControllerContext.HttpContext.User = new ClaimsPrincipal(identity);
 

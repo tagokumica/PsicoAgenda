@@ -7,17 +7,16 @@ namespace PsicoAgendaTests.Domain.Validate
     {
         public static class CpfValidatorTestsData
         {
-            // CPFs válidos conhecidos (para teste)
             public static readonly string[] ValidCpfs = new[]
             {
-            "529.982.247-25",
-            "52998224725",
-            "168.995.350-09",
-            "16899535009",
-            "111.444.777-35",
-            " 529.982.247-25 " // com espaços
-        };
-       }
+                "529.982.247-25",
+                "52998224725",
+                "168.995.350-09",
+                "16899535009",
+                "111.444.777-35",
+                " 529.982.247-25 " // com espaços
+            };
+        }
         [Theory(DisplayName = "IsValid deve retornar TRUE para CPFs válidos")]
         [MemberData(nameof(GetValidCpfs))]
         public void IsValid_ReturnsTrue_ForValidCpfs(string cpf)
@@ -57,8 +56,6 @@ namespace PsicoAgendaTests.Domain.Validate
         [Fact(DisplayName = "IsValid lança FormatException quando há letras em string de 11 caracteres (comportamento atual)")]
         public void IsValid_ThrowsFormatException_WhenLettersPresentIn11CharInput()
         {
-            // Observação: pelo algoritmo atual, se a string tem 11 chars mas contém letras,
-            // int.Parse(...) lança FormatException. Este teste documenta o comportamento.
             var cpfComLetras = "abc123def45"; // 11 caracteres
 
             Assert.Throws<FormatException>(() => Document.IsValid(cpfComLetras));
