@@ -68,6 +68,10 @@ ScaffoldingReadMe.txt
 # StyleCop
 StyleCopReport.xml
 
+# Arquivos de ambiente
+.env
+.env.*
+
 # Files built by Visual Studio
 *_i.c
 *_p.c
