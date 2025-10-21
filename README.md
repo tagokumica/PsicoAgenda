@@ -18,8 +18,7 @@ O **NPM** (Node Package Manager) vem junto com o Node.
 
 #### Instalação (Windows)
 
-1. Acesse o site oficial:  
-    [https://nodejs.org/](https://nodejs.org/)
+1. Acesse o site oficial: [https://nodejs.org/](https://nodejs.org/)
 2. Baixe a **versão LTS (Long Term Support)** — geralmente marcada como “Recommended for Most Users”.
 3. Execute o instalador:
    - Marque a opção **“Add to PATH”** durante a instalação.
@@ -35,8 +34,7 @@ O Docker permite criar e executar containers para o back-end (.NET), front-end (
 
 #### Instalação
 
-Baixe o instalador em:
-[https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+Baixe o instalador em: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 Execute o instalador e siga os passos padrão.
 
 Após a instalação, abra o Docker Desktop e espere o daemon inicializar.
@@ -47,8 +45,7 @@ O GitHub Desktop facilita o controle de versão e sincronização de projetos co
 
 #### Instalação
 
-Acesse:
- [https://desktop.github.com/](https://desktop.github.com/)
+Acesse: [https://desktop.github.com/](https://desktop.github.com/)
 
 Baixe e instale normalmente.
 Faça login com sua conta do GitHub.
@@ -60,8 +57,7 @@ O **Visual Studio 2022** é o ambiente recomendado para o desenvolvimento **.NET
 
 #### Instalação
 
-1. Acesse o site oficial:  
-     [https://visualstudio.microsoft.com/pt-br/downloads/](https://visualstudio.microsoft.com/pt-br/downloads/)
+1. Acesse o site oficial: [https://visualstudio.microsoft.com/pt-br/downloads/](https://visualstudio.microsoft.com/pt-br/downloads/)
 2. Escolha a edição **Community (gratuita)**.
 3. Durante a instalação, selecione o workload:
    -**ASP.NET e desenvolvimento web**
@@ -76,8 +72,7 @@ O **Visual Studio Code (VS Code)** é um editor leve e moderno, ideal para o des
 
 #### Instalação
 
-1. Acesse o site oficial:  
-      [https://code.visualstudio.com/](https://code.visualstudio.com/)
+1. Acesse o site oficial: [https://code.visualstudio.com/](https://code.visualstudio.com/)
 2. Baixe e instale normalmente.
 3. Após a instalação, abra o VS Code e instale as seguintes extensões recomendadas:
 
@@ -93,8 +88,7 @@ O **SQL Server Management Studio (SSMS)** é o cliente gráfico oficial da Micro
 
 #### Instalação
 
-1. Acesse o instalador oficial:  
-   [https://aka.ms/ssmsfullsetup](https://aka.ms/ssmsfullsetup)
+1. Acesse o instalador oficial: [https://aka.ms/ssmsfullsetup](https://aka.ms/ssmsfullsetup)
 2. Baixe e instale normalmente.
 3. Após abrir o SSMS, conecte-se ao servidor configurado no **Docker** conforme os dados abaixo:
 
