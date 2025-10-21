@@ -4,12 +4,12 @@
 Este guia explica como preparar seu ambiente para desenvolver aplicações **.NET 8 + React + SQL Server**, com Docker e GitHub.
 # Sumário
 
-1. [Instalação do Node.js e NPM](#-1-nodejs-e-npm)  
-2. [Instalação do Docker Desktop](#-2-docker-desktop)  
-3. [Instalação do GitHub Desktop](#-3-github-desktop)  
-4. [Instalação do Visual Studio 2022 (para .NET)](#-4-visual-studio-2022-para-net)  
-5. [Instalação do Visual Studio Code (para front-end React)](#-5-visual-studio-code-para-front-end-react)  
-6. [Instalação do SQL Server Management Studio (SSMS)](#-6-sql-server-management-studio-ssms) 
+1. [Instalação do Node.js e NPM](#1-nodejs-e-npm)  
+2. [Instalação do Docker Desktop](#2-docker-desktop)  
+3. [Instalação do GitHub Desktop](#3-github-desktop)  
+4. [Instalação do Visual Studio 2022 (para .NET)](#4-visual-studio-2022-para-net)  
+5. [Instalação do Visual Studio Code (para front-end React)](#5-visual-studio-code-para-front-end-react)  
+6. [Instalação do SQL Server Management Studio (SSMS)](#6-sql-server-management-studio-ssms)
 ---
 
 ##  1. Node.js e NPM
