@@ -1,8 +1,7 @@
-# PsicoAgenda
-# Guia de Instalação do Ambiente de Desenvolvimento
+# Guia de Instalação do Ambiente de Desenvolvimento PsicoAgenda
+Este guia explica como preparar seu ambiente para desenvolver aplicações **.NET 8 + React + SQL Server, com Docker, GitHub e Visual Studio**.
 
-Este guia explica como preparar seu ambiente para desenvolver aplicações **.NET 8 + React + SQL Server**, com Docker e GitHub.
-# Sumário
+## Sumário
 
 1. [Instalação do Node.js e NPM](#1-nodejs-e-npm)  
 2. [Instalação do Docker Desktop](#2-docker-desktop)  
@@ -12,12 +11,12 @@ Este guia explica como preparar seu ambiente para desenvolver aplicações **.NE
 6. [Instalação do SQL Server Management Studio (SSMS)](#6-sql-server-management-studio-ssms)
 ---
 
-##  1. Node.js e NPM
+###  1. Node.js e NPM
 
 O **Node.js** é necessário para executar o front-end React.  
 O **NPM** (Node Package Manager) vem junto com o Node.
 
-### Instalação (Windows)
+#### Instalação (Windows)
 
 1. Acesse o site oficial:  
     [https://nodejs.org/](https://nodejs.org/)
@@ -30,11 +29,11 @@ O **NPM** (Node Package Manager) vem junto com o Node.
    node -v
    npm -v
    ```
-## 2. Docker Desktop
+### 2. Docker Desktop
 
 O Docker permite criar e executar containers para o back-end (.NET), front-end (React) e banco de dados (SQL Server).
 
-### Instalação
+#### Instalação
 
 Baixe o instalador em:
 [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
@@ -42,11 +41,11 @@ Execute o instalador e siga os passos padrão.
 
 Após a instalação, abra o Docker Desktop e espere o daemon inicializar.
 
-## 3. GitHub Desktop
+### 3. GitHub Desktop
 
 O GitHub Desktop facilita o controle de versão e sincronização de projetos com o GitHub.
 
-### Instalação
+#### Instalação
 
 Acesse:
  [https://desktop.github.com/](https://desktop.github.com/)
@@ -55,11 +54,11 @@ Baixe e instale normalmente.
 Faça login com sua conta do GitHub.
 Clone um repositório diretamente pela interface ou arraste a pasta do projeto.
 
-## 4. Visual Studio 2022 (para .NET)
+### 4. Visual Studio 2022 (para .NET)
 
 O **Visual Studio 2022** é o ambiente recomendado para o desenvolvimento **.NET 8**.
 
-### Instalação
+#### Instalação
 
 1. Acesse o site oficial:  
      [https://visualstudio.microsoft.com/pt-br/downloads/](https://visualstudio.microsoft.com/pt-br/downloads/)
@@ -71,11 +70,11 @@ O **Visual Studio 2022** é o ambiente recomendado para o desenvolvimento **.NET
    ```bash
    dotnet --version
 
-## 5. Visual Studio Code (para front-end React)
+### 5. Visual Studio Code (para front-end React)
 
 O **Visual Studio Code (VS Code)** é um editor leve e moderno, ideal para o desenvolvimento **React + TypeScript**.
 
-### Instalação
+#### Instalação
 
 1. Acesse o site oficial:  
       [https://code.visualstudio.com/](https://code.visualstudio.com/)
@@ -88,11 +87,11 @@ O **Visual Studio Code (VS Code)** é um editor leve e moderno, ideal para o des
    -  **GitHub Copilot** — sugestões inteligentes de código  
    -  **Docker** — integração e gerenciamento de containers  
 
-## 6. SQL Server Management Studio (SSMS)
+### 6. SQL Server Management Studio (SSMS)
 
 O **SQL Server Management Studio (SSMS)** é o cliente gráfico oficial da Microsoft para gerenciar bancos de dados **SQL Server**.
 
-### Instalação
+#### Instalação
 
 1. Acesse o instalador oficial:  
    [https://aka.ms/ssmsfullsetup](https://aka.ms/ssmsfullsetup)
