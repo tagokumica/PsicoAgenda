@@ -1,5 +1,8 @@
+using Infrastructure.Auth.Configuration;
 using Infrastructure.Auth.Context.Seed;
+using Infrastructure.Data.Context;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddIdentityWithJwt(builder.Configuration);
+builder.Services.AddDbContext<PsicoContext>(o =>
+    o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
