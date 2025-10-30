@@ -15,23 +15,23 @@ namespace Infrastructure.Auth.Service
 {
     public sealed class JwtTokenService : IJwtTokenService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<UserApplication> _userManager;
         private readonly AuthContext _db;
         private readonly JwtOptions _opt;
 
-        public JwtTokenService(UserManager<IdentityUser> userManager, AuthContext db, IOptions<JwtOptions> opt)
+        public JwtTokenService(UserManager<UserApplication> userManager, AuthContext db, IOptions<JwtOptions> opt)
         {
             _userManager = userManager; 
             _db = db; 
             _opt = opt.Value;
         }
 
-        public async Task<(string, RefreshToken)> IssueTokensAsync(IdentityUser user, CancellationToken ct = default)
+        public async Task<(string, RefreshToken)> IssueTokensAsync(UserApplication user, CancellationToken ct = default)
         {
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, user.Id),
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new(JwtRegisteredClaimNames.UniqueName, user.UserName ?? ""),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
@@ -49,7 +49,7 @@ namespace Infrastructure.Auth.Service
                 signingCredentials: creds);
 
             var access = new JwtSecurityTokenHandler().WriteToken(token);
-            var refresh = await CreateRefreshTokenAsync(Guid.Parse(user.Id), ct);
+            var refresh = await CreateRefreshTokenAsync(Guid.Parse(user.Id.ToString()), ct);
             return (access, refresh);
         }
 

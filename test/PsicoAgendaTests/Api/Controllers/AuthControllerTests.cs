@@ -15,46 +15,46 @@ namespace PsicoAgendaTests.Api.Controllers
 {
     public class AuthControllerTests
     {
-        private static Mock<UserManager<IdentityUser>> CreateUserManagerMock()
+        private static Mock<UserManager<UserApplication>> CreateUserManagerMock()
         {
-            var store = new Mock<IUserStore<IdentityUser>>();
+            var store = new Mock<IUserStore<UserApplication>>();
             var options = new Mock<IOptions<IdentityOptions>>();
             options.Setup(o => o.Value).Returns(new IdentityOptions());
 
-            var pwdHasher = new Mock<IPasswordHasher<IdentityUser>>();
-            var userValidators = new List<IUserValidator<IdentityUser>>();
-            var pwdValidators = new List<IPasswordValidator<IdentityUser>>();
+            var pwdHasher = new Mock<IPasswordHasher<UserApplication>>();
+            var userValidators = new List<IUserValidator<UserApplication>>();
+            var pwdValidators = new List<IPasswordValidator<UserApplication>>();
             var normalizer = new Mock<ILookupNormalizer>();
             var services = new Mock<IServiceProvider>();
-            var logger = new Mock<ILogger<UserManager<IdentityUser>>>();
+            var logger = new Mock<ILogger<UserManager<UserApplication>>>();
 
-            return new Mock<UserManager<IdentityUser>>(
+            return new Mock<UserManager<UserApplication>>(
                 store.Object, options.Object, pwdHasher.Object, userValidators,
                 pwdValidators, normalizer.Object, new IdentityErrorDescriber(),
                 services.Object, logger.Object);
         }
 
-        private static Mock<SignInManager<IdentityUser>> CreateSignInManagerMock(UserManager<IdentityUser> userManager)
+        private static Mock<SignInManager<UserApplication>> CreateSignInManagerMock(UserManager<UserApplication> userManager)
         {
             var contextAccessor = new Mock<IHttpContextAccessor>();
             contextAccessor.Setup(a => a.HttpContext).Returns(new DefaultHttpContext());
 
-            var claimsFactory = new Mock<IUserClaimsPrincipalFactory<IdentityUser>>();
+            var claimsFactory = new Mock<IUserClaimsPrincipalFactory<UserApplication>>();
             var options = new Mock<IOptions<IdentityOptions>>();
             options.Setup(o => o.Value).Returns(new IdentityOptions());
 
-            var logger = new Mock<ILogger<SignInManager<IdentityUser>>>();
+            var logger = new Mock<ILogger<SignInManager<UserApplication>>>();
             var schemes = new Mock<Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider>();
-            var confirmation = new Mock<IUserConfirmation<IdentityUser>>();
+            var confirmation = new Mock<IUserConfirmation<UserApplication>>();
 
-            return new Mock<SignInManager<IdentityUser>>(
+            return new Mock<SignInManager<UserApplication>>(
                 userManager, contextAccessor.Object, claimsFactory.Object,
                 options.Object, logger.Object, schemes.Object, confirmation.Object);
         }
 
         private static AuthController CreateController(
-            Mock<UserManager<IdentityUser>> userMgr,
-            Mock<SignInManager<IdentityUser>> signInMgr,
+            Mock<UserManager<UserApplication>> userMgr,
+            Mock<SignInManager<UserApplication>> signInMgr,
             Mock<IJwtTokenService> jwt)
             {
                 return new AuthController(userMgr.Object, signInMgr.Object, jwt.Object)
@@ -74,12 +74,12 @@ namespace PsicoAgendaTests.Api.Controllers
             var signInMgr = CreateSignInManagerMock(userMgr.Object);
             var jwt = new Mock<IJwtTokenService>();
 
-            userMgr.Setup(m => m.CreateAsync(It.IsAny<IdentityUser>(), "P@ss123"))
+            userMgr.Setup(m => m.CreateAsync(It.IsAny<UserApplication>(), "P@ss123"))
                    .ReturnsAsync(IdentityResult.Success);
-            userMgr.Setup(m => m.AddToRoleAsync(It.IsAny<IdentityUser>(), "user"))
+            userMgr.Setup(m => m.AddToRoleAsync(It.IsAny<UserApplication>(), "user"))
                    .ReturnsAsync(IdentityResult.Success);
 
-            jwt.Setup(t => t.IssueTokensAsync(It.IsAny<IdentityUser>(), default))
+            jwt.Setup(t => t.IssueTokensAsync(It.IsAny<UserApplication>(), default))
                .ReturnsAsync(("access-abc", new RefreshToken { Token = "refresh-xyz" }));
 
             var controller = CreateController(userMgr, signInMgr, jwt);
@@ -95,8 +95,8 @@ namespace PsicoAgendaTests.Api.Controllers
             Assert.Equal("access-abc", payload.AccessToken);
             Assert.Equal("refresh-xyz", payload.RefreshToken);
 
-            userMgr.Verify(m => m.AddToRoleAsync(It.IsAny<IdentityUser>(), "user"), Times.Once);
-            jwt.Verify(t => t.IssueTokensAsync(It.IsAny<IdentityUser>(), default), Times.Once);
+            userMgr.Verify(m => m.AddToRoleAsync(It.IsAny<UserApplication>(), "user"), Times.Once);
+            jwt.Verify(t => t.IssueTokensAsync(It.IsAny<UserApplication>(), default), Times.Once);
         }
 
         [Fact(DisplayName = "Register: falha de criação retorna BadRequest com erros")]
@@ -106,7 +106,7 @@ namespace PsicoAgendaTests.Api.Controllers
             var signInMgr = CreateSignInManagerMock(userMgr.Object);
             var jwt = new Mock<IJwtTokenService>();
 
-            userMgr.Setup(m => m.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
+            userMgr.Setup(m => m.CreateAsync(It.IsAny<UserApplication>(), It.IsAny<string>()))
                    .ReturnsAsync(IdentityResult.Failed(new IdentityError { Code = "X", Description = "Erro" }));
 
             var controller = CreateController(userMgr, signInMgr, jwt);
@@ -117,7 +117,7 @@ namespace PsicoAgendaTests.Api.Controllers
             var bad = Assert.IsType<BadRequestObjectResult>(result);
             var errs = Assert.IsAssignableFrom<IEnumerable<IdentityError>>(bad.Value);
             Assert.Contains(errs, e => e.Description == "Erro");
-            jwt.Verify(t => t.IssueTokensAsync(It.IsAny<IdentityUser>(), default), Times.Never);
+            jwt.Verify(t => t.IssueTokensAsync(It.IsAny<UserApplication>(), default), Times.Never);
         }
 
         // ---------- Tests: /login ----------
@@ -128,10 +128,10 @@ namespace PsicoAgendaTests.Api.Controllers
             var signInMgr = CreateSignInManagerMock(userMgr.Object);
             var jwt = new Mock<IJwtTokenService>();
 
-            var user = new IdentityUser { Id = Guid.NewGuid().ToString("D"), UserName = "alice", Email = "a@a" };
+            var user = new UserApplication { Id = Guid.NewGuid(), UserName = "alice", Email = "a@a" };
 
             userMgr.Setup(m => m.FindByNameAsync("alice")).ReturnsAsync(user);
-            userMgr.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((IdentityUser)null!);
+            userMgr.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((UserApplication)null!);
             signInMgr.Setup(s => s.CheckPasswordSignInAsync(user, "P@ss", true))
                      .ReturnsAsync(SignInResult.Success);
 
@@ -155,9 +155,9 @@ namespace PsicoAgendaTests.Api.Controllers
             var signInMgr = CreateSignInManagerMock(userMgr.Object);
             var jwt = new Mock<IJwtTokenService>();
 
-            var user = new IdentityUser { Id = Guid.NewGuid().ToString("D"), UserName = "bob", Email = "bob@mail.test" };
+            var user = new UserApplication { Id = Guid.NewGuid(), UserName = "bob", Email = "bob@mail.test" };
 
-            userMgr.Setup(m => m.FindByNameAsync("bob@mail.test")).ReturnsAsync((IdentityUser)null!);
+            userMgr.Setup(m => m.FindByNameAsync("bob@mail.test")).ReturnsAsync((UserApplication)null!);
             userMgr.Setup(m => m.FindByEmailAsync("bob@mail.test")).ReturnsAsync(user);
             signInMgr.Setup(s => s.CheckPasswordSignInAsync(user, "P@ss", true))
                      .ReturnsAsync(SignInResult.Success);
@@ -182,8 +182,8 @@ namespace PsicoAgendaTests.Api.Controllers
             var signInMgr = CreateSignInManagerMock(userMgr.Object);
             var jwt = new Mock<IJwtTokenService>();
 
-            userMgr.Setup(m => m.FindByNameAsync("who")).ReturnsAsync((IdentityUser)null!);
-            userMgr.Setup(m => m.FindByEmailAsync("who")).ReturnsAsync((IdentityUser)null!);
+            userMgr.Setup(m => m.FindByNameAsync("who")).ReturnsAsync((UserApplication)null!);
+            userMgr.Setup(m => m.FindByEmailAsync("who")).ReturnsAsync((UserApplication)null!);
 
             var controller = CreateController(userMgr, signInMgr, jwt);
 
@@ -198,7 +198,7 @@ namespace PsicoAgendaTests.Api.Controllers
             var signInMgr = CreateSignInManagerMock(userMgr.Object);
             var jwt = new Mock<IJwtTokenService>();
 
-            var user = new IdentityUser { Id = Guid.NewGuid().ToString("D"), UserName = "alice" };
+            var user = new UserApplication { Id = Guid.NewGuid(), UserName = "alice" };
 
             userMgr.Setup(m => m.FindByNameAsync("alice")).ReturnsAsync(user);
             signInMgr.Setup(s => s.CheckPasswordSignInAsync(user, "wrong", true))

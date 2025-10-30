@@ -1,4 +1,5 @@
-﻿using Infrastructure.Auth.Service;
+﻿using Infrastructure.Auth.Model;
+using Infrastructure.Auth.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,11 @@ namespace PsicoAgendaAPI.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly UserManager<IdentityUser> _user;
-        private readonly SignInManager<IdentityUser> _signIn;
+        private readonly UserManager<UserApplication> _user;
+        private readonly SignInManager<UserApplication> _signIn;
         private readonly IJwtTokenService _tokens;
 
-        public AuthController(UserManager<IdentityUser> user, SignInManager<IdentityUser> signIn, IJwtTokenService tokens)
+        public AuthController(UserManager<UserApplication> user, SignInManager<UserApplication> signIn, IJwtTokenService tokens)
         {
             _user = user;
             _signIn = signIn;
@@ -27,7 +28,7 @@ namespace PsicoAgendaAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterRequest req)
         {
-            var user = new IdentityUser { UserName = req.UserName, Email = req.Email, EmailConfirmed = true };
+            var user = new UserApplication() { UserName = req.UserName, Email = req.Email, EmailConfirmed = true };
             var result = await _user.CreateAsync(user, req.Password);
             if (!result.Succeeded) return BadRequest(result.Errors);
 
