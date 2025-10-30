@@ -1,8 +1,11 @@
+using Domain.Interface.Repositories;
+using Domain.Interface.Services;
+using Domain.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Auth.Configuration;
-using Infrastructure.Auth.Context.Seed;
 using Infrastructure.Data.Context;
+using Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PsicoAgendaAPI.AutoMapper.Mapper;
@@ -29,6 +32,10 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IAddressMapper, AddressMapper>();
+
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+
+builder.Services.AddScoped<IAddressService, AddressService>();
 
 
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(AddressValidator));
@@ -64,12 +71,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var um = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    var rm = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    await DataSeeder.SeedAsync(um, rm);
-}
+
 
 
 app.Run();

@@ -1,5 +1,4 @@
-﻿
-using Infrastructure.Auth.Configuration.Option;
+﻿using Infrastructure.Auth.Configuration.Option;
 using Infrastructure.Auth.Context;
 using Infrastructure.Auth.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using Infrastructure.Auth.Model;
 
 namespace Infrastructure.Auth.Configuration
 {
@@ -21,13 +21,13 @@ namespace Infrastructure.Auth.Configuration
                 o.UseSqlServer(cfg.GetConnectionString("DefaultConnection")));
 
             services
-                .AddIdentityCore<IdentityUser>(opt =>
+                .AddIdentityCore<UserApplication>(opt =>
                 {
                     opt.Password.RequiredLength = 6;
                     opt.Password.RequireNonAlphanumeric = false;
                     opt.User.RequireUniqueEmail = true;
                 })
-                .AddRoles<IdentityRole>()
+                .AddRoles<RoleApplication>()
                 .AddEntityFrameworkStores<AuthContext>()
                 .AddSignInManager();
 

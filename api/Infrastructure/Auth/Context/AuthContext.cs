@@ -1,11 +1,10 @@
 ﻿using Infrastructure.Auth.Model;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Auth.Context
 {
-    public class AuthContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid, IdentityUserClaim<Guid>, IdentityUserRole<Guid>, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
+    public class AuthContext : IdentityDbContext<UserApplication, RoleApplication, Guid>
     {
         public AuthContext(DbContextOptions<AuthContext> options) : base(options) { }
 

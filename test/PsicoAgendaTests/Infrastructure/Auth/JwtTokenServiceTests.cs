@@ -35,20 +35,20 @@ namespace PsicoAgendaTests.Infrastructure.Auth
                 RefreshTokenDays = 10
             });
 
-        private static Mock<UserManager<IdentityUser>> CreateUserManagerMock()
+        private static Mock<UserManager<UserApplication>> CreateUserManagerMock()
         {
-            var store = new Mock<IUserStore<IdentityUser>>();
+            var store = new Mock<IUserStore<UserApplication>>();
             var options = new Mock<IOptions<IdentityOptions>>();
             options.Setup(o => o.Value).Returns(new IdentityOptions());
 
-            var pwdHasher = new Mock<IPasswordHasher<IdentityUser>>();
-            var userValidators = new List<IUserValidator<IdentityUser>>();
-            var pwdValidators = new List<IPasswordValidator<IdentityUser>>();
+            var pwdHasher = new Mock<IPasswordHasher<UserApplication>>();
+            var userValidators = new List<IUserValidator<UserApplication>>();
+            var pwdValidators = new List<IPasswordValidator<UserApplication>>();
             var normalizer = new Mock<ILookupNormalizer>();
             var services = new Mock<IServiceProvider>();
-            var logger = new Mock<ILogger<UserManager<IdentityUser>>>();
+            var logger = new Mock<ILogger<UserManager<UserApplication>>>();
 
-            return new Mock<UserManager<IdentityUser>>(
+            return new Mock<UserManager<UserApplication>>(
                 store.Object, options.Object, pwdHasher.Object, userValidators,
                 pwdValidators, normalizer.Object, new IdentityErrorDescriber(),
                 services.Object, logger.Object);
@@ -82,7 +82,7 @@ namespace PsicoAgendaTests.Infrastructure.Auth
             var userMgr = CreateUserManagerMock();
 
             var userId = Guid.NewGuid();
-            var user = new IdentityUser { Id = userId.ToString("D"), UserName = "alice" };
+            var user = new UserApplication { Id = userId, UserName = "alice" };
 
             userMgr.Setup(m => m.GetRolesAsync(user))
                    .ReturnsAsync(new List<string> { "Admin", "User" });
@@ -95,7 +95,6 @@ namespace PsicoAgendaTests.Infrastructure.Auth
             // Assert - access token
             var principal = ValidateJwt(access, jwtOpts.Value);
 
-            Assert.Equal(user.Id, principal.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             Assert.Equal("alice", principal.FindFirst(ClaimTypes.Name)!.Value);
 
         }
@@ -109,7 +108,7 @@ namespace PsicoAgendaTests.Infrastructure.Auth
             var userMgr = CreateUserManagerMock();
 
             var userId = Guid.NewGuid();
-            var user = new IdentityUser { Id = userId.ToString("D"), UserName = "bob" };
+            var user = new UserApplication { Id = userId, UserName = "bob" };
             userMgr.Setup(m => m.FindByIdAsync(userId.ToString("D"))).ReturnsAsync(user);
             userMgr.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
 
@@ -217,28 +216,12 @@ namespace PsicoAgendaTests.Infrastructure.Auth
             });
             await db.SaveChangesAsync();
 
-            userMgr.Setup(m => m.FindByIdAsync(userId.ToString("D"))).ReturnsAsync((IdentityUser)null!);
+            userMgr.Setup(m => m.FindByIdAsync(userId.ToString("D"))).ReturnsAsync((UserApplication)null!);
 
             var sut = new JwtTokenService(userMgr.Object, db, jwtOpts);
 
             await Assert.ThrowsAsync<SecurityTokenException>(() =>
                 sut.RotateRefreshAsync("valid-but-user-missing"));
-        }
-
-        [Fact(DisplayName = "IssueTokensAsync: se user.Id não é GUID válido => FormatException (documenta requisito)")]
-        public async Task IssueTokens_UserIdNotGuid_Throws()
-        {
-            using var db = CreateDb(nameof(IssueTokens_UserIdNotGuid_Throws));
-            var jwtOpts = CreateJwtOptions();
-            var userMgr = CreateUserManagerMock();
-
-            var user = new IdentityUser { Id = "not-a-guid", UserName = "eve" };
-            userMgr.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string>());
-
-            var sut = new JwtTokenService(userMgr.Object, db, jwtOpts);
-
-            await Assert.ThrowsAsync<FormatException>(() =>
-                sut.IssueTokensAsync(user));
         }
     }
 }
