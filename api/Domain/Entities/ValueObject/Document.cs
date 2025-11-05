@@ -1,4 +1,4 @@
-﻿namespace Domain.Validate;
+﻿namespace Domain.Entities.ValueObject;
 
 public static class Document
 {

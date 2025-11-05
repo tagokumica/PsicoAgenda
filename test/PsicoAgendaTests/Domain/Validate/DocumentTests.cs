@@ -1,11 +1,11 @@
 ﻿
-using Domain.Validate;
+using Domain.Entities.ValueObject;
 
 namespace PsicoAgendaTests.Domain.Validate
 {
-    public class CpfValidatorTests
+    public class DocumentTests
     {
-        public static class CpfValidatorTestsData
+        public static class DocumentTestsData
         {
             public static readonly string[] ValidCpfs = new[]
             {
@@ -30,7 +30,7 @@ namespace PsicoAgendaTests.Domain.Validate
 
         public static System.Collections.Generic.IEnumerable<object[]> GetValidCpfs()
         {
-            foreach (var cpf in CpfValidatorTestsData.ValidCpfs)
+            foreach (var cpf in DocumentTestsData.ValidCpfs)
                 yield return new object[] { cpf };
         }
 

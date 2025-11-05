@@ -46,4 +46,18 @@ public class PatientRepository : GenericRepository<Patient, Guid>, IPatientRepos
                 .Select(s => s.Patient)
                 .ToListAsync(ct);
     }
+
+    public async Task<bool> ExistsByCpfAsync(string cpf, CancellationToken ct = default)
+    {
+        return await _set
+            .AsNoTracking()
+            .AnyAsync(p => p.Cpf == cpf, ct);
+    }
+
+    public async Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default)
+    {
+        return await _set
+            .AsNoTracking()
+            .AnyAsync(p => p.Email == email, ct);
+    }
 }

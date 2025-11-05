@@ -1,26 +1,56 @@
 ﻿
 using Domain.Entities;
+using Domain.Entities.ValueObject;
 using Domain.Interface.Repositories;
 using Domain.Interface.Services;
+using Domain.Notifiers;
 
 namespace Domain.Services
 {
     public class PatientService : IPatientService
     {
         private readonly IPatientRepository _patientRepository;
+        private readonly INotifier _notifier;
+        private readonly IUserRepository _userRepository;
 
-        public PatientService(IPatientRepository patientRepository)
+        public PatientService(IPatientRepository patientRepository, INotifier notifier, IUserRepository userRepository)
         {
             _patientRepository = patientRepository;
+            _notifier = notifier;
+            _userRepository = userRepository;
         }
 
         public async Task AddAsync(Patient patient, CancellationToken ct = default)
         {
-            if (patient is null)
-                throw new ArgumentNullException(nameof(patient));
+            try
+            {
+                if (!Document.IsValid(patient.Cpf))
+                {
+                    _notifier.Handle(new Notification(nameof(patient.Cpf), "CPF inválido."));
+                    return;
+                }
 
-            await _patientRepository.AddAsync(patient, ct);
-            await _patientRepository.SaveChangesAsync(ct);
+                if (await _patientRepository.ExistsByCpfAsync(patient.Cpf, ct))
+                {
+                    _notifier.Handle(new Notification(nameof(patient.Cpf), "CPF já cadastrado."));
+                    return;
+                }
+
+                if (await _patientRepository.ExistsByEmailAsync(patient.Email, ct) ||
+                    await _userRepository.ExistsByEmailAsync(patient.Email, ct))
+                {
+                    _notifier.Handle(new Notification(nameof(patient.Email), "E-mail já cadastrado."));
+                    return;
+                }
+
+                await _patientRepository.AddAsync(patient, ct);
+                await _patientRepository.SaveChangesAsync(ct);
+
+            }
+            catch (ArgumentNullException e)
+            {
+                throw new ArgumentNullException(e.Message);
+            }
         }
 
         public async void Delete(Patient patient, CancellationToken ct = default)
@@ -80,20 +110,34 @@ namespace Domain.Services
 
         public async void Update(Patient patient)
         {
-            await Task.Run(async () =>
-            {
-                if (patient is null)
-                    throw new ArgumentNullException(nameof(patient));
-                if (patient.Id == Guid.Empty)
-                    throw new ArgumentException("Disponibilidade sem Id.");
 
-                var exists = await _patientRepository.ExistsAsync(patient.Id);
-                if (!exists)
-                    throw new KeyNotFoundException($"Disponibilidade {patient.Id} não encontrado.");
+            try
+            {
+                if (await _patientRepository.ExistsByEmailAsync(patient.Email) ||
+                    await _userRepository.ExistsByEmailAsync(patient.Email))
+                {
+                    _notifier.Handle(new Notification(nameof(patient.Email), "E-mail já cadastrado."));
+                    return;
+                }
 
                 _patientRepository.Update(patient);
                 await _patientRepository.SaveChangesAsync();
-            });
+
+            }
+            catch (ArgumentNullException e)
+            {
+                throw new ArgumentNullException(e.Message);
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException("Paciente sem Id.", e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"Paciente {patient.Id} não encontrado.", e);
+            }
+
+            await Task.CompletedTask;
         }
     }
 }

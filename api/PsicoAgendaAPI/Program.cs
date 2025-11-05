@@ -1,5 +1,6 @@
 using Domain.Interface.Repositories;
 using Domain.Interface.Services;
+using Domain.Notifiers;
 using Domain.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -36,6 +37,8 @@ builder.Services.AddScoped<IAddressMapper, AddressMapper>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
 builder.Services.AddScoped<IAddressService, AddressService>();
+
+builder.Services.AddScoped<INotifier, Notifier>();
 
 
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(AddressValidator));
