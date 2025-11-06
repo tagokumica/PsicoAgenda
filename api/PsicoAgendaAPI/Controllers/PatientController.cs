@@ -7,7 +7,7 @@ namespace PsicoAgendaAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PatientController : NotifierController
+    public class PatientController : BaseController
     {
         private readonly IPatientMapper _patientMapper;
 
