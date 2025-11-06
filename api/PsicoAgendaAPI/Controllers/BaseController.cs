@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace PsicoAgendaAPI.Controllers
 {
     [ApiController]
-    public abstract class NotifierController : ControllerBase
+    public abstract class BaseController : ControllerBase
     {
         private readonly INotifier _notifier;
 
-        protected NotifierController(INotifier notifier)
+        protected BaseController(INotifier notifier)
         {
             _notifier = notifier;
         }
