@@ -12,6 +12,7 @@ namespace Domain.Interface.Services
         Task AddAsync(SessionSchedule sessionSchedule, CancellationToken ct = default);
         void Update(SessionSchedule sessionSchedule);
         void Delete(SessionSchedule sessionSchedule, CancellationToken ct = default);
-
+        Task<int> GetSessionScheduleByDurationCountAsync(TimeSpan durationMinute, CancellationToken ct = default);
+        Task<IEnumerable<SessionSchedule>> GetUpcomingSessionsAsync(TimeSpan duration, CancellationToken ct = default);
     }
 }

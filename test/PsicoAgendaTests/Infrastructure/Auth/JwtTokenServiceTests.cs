@@ -1,4 +1,6 @@
-﻿
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Infrastructure.Auth.Configuration.Option;
 using Infrastructure.Auth.Context;
 using Infrastructure.Auth.Model;
@@ -9,9 +11,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace PsicoAgendaTests.Infrastructure.Auth
 {
@@ -95,6 +94,7 @@ namespace PsicoAgendaTests.Infrastructure.Auth
             // Assert - access token
             var principal = ValidateJwt(access, jwtOpts.Value);
 
+            Assert.Equal(user.Id, Guid.Parse(principal.FindFirst(ClaimTypes.NameIdentifier)!.Value));
             Assert.Equal("alice", principal.FindFirst(ClaimTypes.Name)!.Value);
 
         }

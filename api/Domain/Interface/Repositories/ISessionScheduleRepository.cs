@@ -6,4 +6,7 @@ public interface ISessionScheduleRepository : IGenericRepository<SessionSchedule
 {
     Task<IEnumerable<SessionSchedule>> GetSessionScheduleBySessionNotesAsync(Guid sessionScheduleId, CancellationToken ct = default);
     Task<IEnumerable<SessionSchedule>> GetSessionScheduleByWaitsAsync(Guid sessionScheduleId, CancellationToken ct = default);
+    Task<int> GetSessionScheduleByDurationCountAsync(TimeSpan durationMinute, CancellationToken ct = default);
+    Task<IEnumerable<SessionSchedule>> GetUpcomingSessionsAsync(TimeSpan duration, CancellationToken ct = default);
+
 }

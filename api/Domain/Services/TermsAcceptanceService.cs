@@ -23,20 +23,26 @@ namespace Domain.Services
 
         public async void Delete(TermsAcceptance termsAcceptance, CancellationToken ct = default)
         {
-            await Task.Run(async () =>
+            try
             {
-                if (termsAcceptance is null)
-                    throw new ArgumentNullException(nameof(termsAcceptance));
-                if (termsAcceptance.Id == Guid.Empty)
-                    throw new ArgumentException("Aceite dos Termos sem Id.");
-
-                var current = await _termsAcceptanceRepository.GetByIdAsync(termsAcceptance.Id, ct);
-                if (current is null)
-                    throw new KeyNotFoundException($"Aceite dos Termos {termsAcceptance.Id} não encontrado.");
-
                 _termsAcceptanceRepository.Remove(termsAcceptance);
                 await _termsAcceptanceRepository.SaveChangesAsync(ct);
-            }, ct);
+            }
+            catch (ArgumentNullException e)
+            {
+                throw new ArgumentNullException();
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException("Aceite dos Termos sem Id.", e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"Aceite dos Termos {termsAcceptance.Id} não encontrado.", e);
+            }
+
+            await Task.CompletedTask;
+
         }
 
         public Task<bool> ExistsAsync(Guid id, CancellationToken ct = default)
@@ -56,6 +62,40 @@ namespace Domain.Services
             return termsAcceptance ?? throw new KeyNotFoundException($"Aceite dos Termos {id} não encontrado.");
         }
 
+        public async Task<IEnumerable<TermsAcceptance>> GetIsAgreedAsync(CancellationToken ct = default)
+        {
+            return await _termsAcceptanceRepository.GetIsAgreedAsync(ct);
+        }
+
+        public async Task<IEnumerable<TermsAcceptance>> GetIsNotAgreedAsync(CancellationToken ct = default)
+        {
+            return await _termsAcceptanceRepository.GetIsNotAgreedAsync(ct);
+        }
+
+        public async Task<TermsAcceptance> IsAgreedAsync(Guid userId, Guid termsOfUseId, CancellationToken ct = default)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("Id inválido.", nameof(userId));
+
+            if (termsOfUseId == Guid.Empty)
+                throw new ArgumentException("Id inválido.", nameof(termsOfUseId));
+
+            var termsAcceptance = await _termsAcceptanceRepository.IsAgreedAsync(userId, termsOfUseId, ct);
+            return termsAcceptance;
+        }
+
+        public async Task<TermsAcceptance> IsNotAgreedAsync(Guid userId, Guid termsOfUseId, CancellationToken ct = default)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("Id inválido.", nameof(userId));
+
+            if (termsOfUseId == Guid.Empty)
+                throw new ArgumentException("Id inválido.", nameof(termsOfUseId));
+
+            var termsAcceptance = await _termsAcceptanceRepository.IsAgreedAsync(userId, termsOfUseId, ct);
+            return termsAcceptance;
+        }
+
         public Task<List<TermsAcceptance>> ListAsync(Func<IQueryable<TermsAcceptance>, IQueryable<TermsAcceptance>>? query = null, CancellationToken ct = default)
         {
             return _termsAcceptanceRepository.ListAsync(query, ct);
@@ -63,20 +103,26 @@ namespace Domain.Services
 
         public async void Update(TermsAcceptance termsAcceptance)
         {
-            await Task.Run(async () =>
+            try
             {
-                if (termsAcceptance is null)
-                    throw new ArgumentNullException(nameof(termsAcceptance));
-                if (termsAcceptance.Id == Guid.Empty)
-                    throw new ArgumentException("Aceite dos Termos sem Id.");
-
-                var current = await _termsAcceptanceRepository.GetByIdAsync(termsAcceptance.Id);
-                if (current is null)
-                    throw new KeyNotFoundException($"Aceite dos Termos {termsAcceptance.Id} não encontrado.");
-
                 _termsAcceptanceRepository.Update(termsAcceptance);
                 await _termsAcceptanceRepository.SaveChangesAsync();
-            });
+            }
+            catch (ArgumentNullException e)
+            {
+                throw new ArgumentNullException();
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException("Aceite dos Termos sem Id.", e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"Aceite dos Termos {termsAcceptance.Id} não encontrado.", e);
+            }
+
+            await Task.CompletedTask;
+
         }
     }
 }

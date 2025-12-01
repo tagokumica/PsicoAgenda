@@ -22,8 +22,19 @@ public class TermsAcceptanceConfiguration : IEntityTypeConfiguration<TermsAccept
             .HasForeignKey(p => p.TermsOfUseId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.Property(x => x.Content)
+            .IsRequired()
+            .HasColumnType("varchar")
+            .HasMaxLength(1000);
+
+
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .HasColumnType("date");
+
+        builder.Property(x => x.IsAgreed)
+            .IsRequired()
+            .HasColumnType("bool");
+
     }
 }

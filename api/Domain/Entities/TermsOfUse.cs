@@ -8,9 +8,9 @@ public class TermsOfUse
     public DateTime CreatedAt { get; private set; }
     public string Version { get; private set; }
     public IEnumerable<TermsAcceptance> TermsAcceptance { get; private set; }
-    public TermsOfUse(string content, string name, string version, DateTime createdAt)
+    public TermsOfUse(Guid id, string content, string name, string version, DateTime createdAt)
     {
-        Id = Guid.NewGuid();
+        Id = id;
         Content = content;
         Name = name;
         CreatedAt = createdAt;

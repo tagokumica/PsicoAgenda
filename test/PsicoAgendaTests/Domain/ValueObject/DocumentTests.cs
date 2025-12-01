@@ -1,7 +1,7 @@
 ﻿
 using Domain.Entities.ValueObject;
 
-namespace PsicoAgendaTests.Domain.Validate
+namespace PsicoAgendaTests.Domain.ValueObject
 {
     public class DocumentTests
     {

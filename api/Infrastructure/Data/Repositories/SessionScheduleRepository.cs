@@ -11,6 +11,15 @@ public class SessionScheduleRepository : GenericRepository<SessionSchedule, Guid
     {
     }
 
+    public async Task<int> GetSessionScheduleByDurationCountAsync(TimeSpan durationMinute, CancellationToken ct = default)
+    {
+        return await
+            _set
+                .AsNoTracking()
+                .Include(t => t.Patient)
+                .CountAsync(s => s.DurationMinute == durationMinute, cancellationToken: ct);
+    }
+
     public async Task<IEnumerable<SessionSchedule>> GetSessionScheduleBySessionNotesAsync(Guid sessionScheduleId, CancellationToken ct = default)
     {
         return await
@@ -34,5 +43,15 @@ public class SessionScheduleRepository : GenericRepository<SessionSchedule, Guid
                 .Where(s => s.SessionId == sessionScheduleId)
                 .Select(s => s.SessionSchedule)
                 .ToListAsync(ct);
+    }
+
+    public async Task<IEnumerable<SessionSchedule>> GetUpcomingSessionsAsync(TimeSpan duration, CancellationToken ct = default)
+    {
+        return await _set
+            .AsNoTracking()
+            .Include(s => s.Patient)
+            .Where(s => s.AvaliableAt >= DateTime.Now)
+            .OrderBy(s => s.AvaliableAt)
+            .ToListAsync(ct);
     }
 }

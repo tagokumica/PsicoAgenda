@@ -23,20 +23,26 @@ namespace Domain.Services
 
         public async void Delete(SessionSchedule sessionSchedule, CancellationToken ct = default)
         {
-            await Task.Run(async () =>
+            try
             {
-                if (sessionSchedule is null)
-                    throw new ArgumentNullException(nameof(sessionSchedule));
-                if (sessionSchedule.Id == Guid.Empty)
-                    throw new ArgumentException("Agenda de Atendimento sem Id.");
-
-                var current = await _sessionScheduleRepository.GetByIdAsync(sessionSchedule.Id, ct);
-                if (current is null)
-                    throw new KeyNotFoundException($"Agenda de Atendimento {sessionSchedule.Id} não encontrado.");
-
                 _sessionScheduleRepository.Remove(sessionSchedule);
                 await _sessionScheduleRepository.SaveChangesAsync(ct);
-            }, ct);
+            }
+            catch (ArgumentNullException e)
+            {
+                throw new ArgumentNullException();
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException("Agenda de Atendimento sem Id.", e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"Agenda de Atendimento {sessionSchedule.Id} não encontrado.", e);
+            }
+
+            await Task.CompletedTask;
+
         }
 
         public Task<bool> ExistsAsync(Guid id, CancellationToken ct = default)
@@ -56,6 +62,11 @@ namespace Domain.Services
             return sessionSchedule ?? throw new KeyNotFoundException($"Agenda de Atendimento {id} não encontrado.");
         }
 
+        public Task<int> GetSessionScheduleByDurationCountAsync(TimeSpan durationMinute, CancellationToken ct = default)
+        {
+            return _sessionScheduleRepository.GetSessionScheduleByDurationCountAsync(durationMinute, ct);
+        }
+
         public Task<IEnumerable<SessionSchedule>> GetSessionScheduleBySessionNotesAsync(Guid sessionScheduleId, CancellationToken ct = default)
         {
             return _sessionScheduleRepository.GetSessionScheduleBySessionNotesAsync(sessionScheduleId, ct);
@@ -66,6 +77,11 @@ namespace Domain.Services
             return _sessionScheduleRepository.GetSessionScheduleByWaitsAsync(sessionScheduleId, ct);
         }
 
+        public Task<IEnumerable<SessionSchedule>> GetUpcomingSessionsAsync(TimeSpan duration, CancellationToken ct = default)
+        {
+            return _sessionScheduleRepository.GetUpcomingSessionsAsync(duration, ct);
+        }
+
         public Task<List<SessionSchedule>> ListAsync(Func<IQueryable<SessionSchedule>, IQueryable<SessionSchedule>>? query = null, CancellationToken ct = default)
         {
             return _sessionScheduleRepository.ListAsync(query, ct);
@@ -73,20 +89,25 @@ namespace Domain.Services
 
         public async void Update(SessionSchedule sessionSchedule)
         {
-            await Task.Run(async () =>
+            try
             {
-                if (sessionSchedule is null)
-                    throw new ArgumentNullException(nameof(sessionSchedule));
-                if (sessionSchedule.Id == Guid.Empty)
-                    throw new ArgumentException("Agenda de Atendimento sem Id.");
-
-                var exists = await _sessionScheduleRepository.ExistsAsync(sessionSchedule.Id);
-                if (!exists)
-                    throw new KeyNotFoundException($"Agenda de Atendimento {sessionSchedule.Id} não encontrado.");
-
                 _sessionScheduleRepository.Update(sessionSchedule);
                 await _sessionScheduleRepository.SaveChangesAsync();
-            });
+            }
+            catch (ArgumentNullException e)
+            {
+                throw new ArgumentNullException();
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException("Agenda de Atendimento sem Id.", e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"Agenda de Atendimento {sessionSchedule.Id} não encontrado.", e);
+            }
+
+            await Task.CompletedTask;
         }
     }
 }

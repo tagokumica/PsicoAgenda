@@ -12,6 +12,9 @@ namespace Domain.Interface.Services
         Task AddAsync(TermsAcceptance termsAcceptance, CancellationToken ct = default);
         void Update(TermsAcceptance termsAcceptance);
         void Delete(TermsAcceptance termsAcceptance, CancellationToken ct = default);
-
+        Task<IEnumerable<TermsAcceptance>> GetIsAgreedAsync(CancellationToken ct = default);
+        Task<IEnumerable<TermsAcceptance>> GetIsNotAgreedAsync(CancellationToken ct = default);
+        Task<TermsAcceptance> IsAgreedAsync(Guid userId, Guid termsOfUseId, CancellationToken ct = default);
+        Task<TermsAcceptance> IsNotAgreedAsync(Guid userId, Guid termsOfUseId, CancellationToken ct = default);
     }
 }

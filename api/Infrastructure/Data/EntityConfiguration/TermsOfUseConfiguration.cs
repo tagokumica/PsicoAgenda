@@ -20,7 +20,7 @@ public class TermsOfUseConfiguration : IEntityTypeConfiguration<TermsOfUse>
         builder.Property(x => x.Content)
             .IsRequired()
             .HasColumnType("varchar")
-            .HasMaxLength(500);
+            .HasMaxLength(1000);
 
         builder.Property(x => x.CreatedAt)
             .HasColumnType("date");
