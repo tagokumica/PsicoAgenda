@@ -8,7 +8,7 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
     ports:
-      - "1433:1433"
+      - "1544:1433"
     volumes:
       - mssqldata:/var/opt/mssql
     restart: unless-stopped
@@ -52,7 +52,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__Default: "Server=db,1433;Database=PsicoDB;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
     ports:
-      - "8080:8080"
+      - "5050:8080"
     restart: unless-stopped
     networks: [appnet]
 
@@ -64,7 +64,7 @@ services:
     depends_on:
       - api
     ports:
-      - "80:80"
+      - "90:80"
     restart: unless-stopped
     networks: [appnet]
 
