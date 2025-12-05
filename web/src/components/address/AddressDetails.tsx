@@ -1,4 +1,4 @@
-import AddressViewModel from "../../viewmodels/AddressViewModel";
+import {AddressViewModel} from "../../viewmodels/AddressViewModel";
 
 export default function AddressDetails(props: AddressViewModel) {
     const {street, number, complement, city, zipCode, state} = props;

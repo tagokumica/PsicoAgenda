@@ -1,4 +1,4 @@
-class AddressViewModel {
+export class AddressViewModel {
     id: string = ""
     zipCode: string = "";
     street: string = "";

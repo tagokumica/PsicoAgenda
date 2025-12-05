@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AddressModal from "../../components/address/ModalUpdateAddress";
+import {AddressViewModel} from "../../viewmodels/AddressViewModel";
 
 
 export default function AddressesPage({ modal }: any) {
